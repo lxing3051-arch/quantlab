@@ -11,6 +11,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from utils.data_loader import get_numeric_columns, validate_dataframe
+from utils.guides import render_beginner_guide
 from utils.report_export import register_report_section
 from utils.styles import PLOTLY_LAYOUT, render_metric_cards
 
@@ -214,6 +215,7 @@ def render_portfolio(df: pd.DataFrame) -> None:
         "可视化有效前沿并定位最大夏普与最小方差组合。</div>",
         unsafe_allow_html=True,
     )
+    render_beginner_guide("portfolio", expanded=False)
 
     if not validate_dataframe(df, min_rows=30):
         return

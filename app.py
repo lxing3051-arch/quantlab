@@ -25,12 +25,14 @@ from modules import (
     render_ml_classify,
     render_portfolio,
     render_regression,
+    render_watchdesk,
 )
 from utils.data_loader import (
     SAMPLE_DATASET_OPTIONS,
     get_sample_dataset,
     load_user_file,
 )
+from utils.guides import render_learning_path_sidebar
 from utils.report_export import render_report_download_panel
 from utils.styles import inject_custom_css
 
@@ -53,6 +55,7 @@ MODULE_OPTIONS = [
     "💼 4. 马克维茨资产组合优化",
     "📡 5. 市场数据与技术指标",
     "🤖 6. 机器学习分类与预测",
+    "🧭 7. 看盘助手与条件选股",
 ]
 
 
@@ -111,6 +114,8 @@ def render_sidebar() -> str:
         )
 
         st.markdown("---")
+        render_learning_path_sidebar()
+
         st.markdown("#### 📂 模块导航")
         module = st.radio(
             "选择功能模块",
@@ -121,9 +126,9 @@ def render_sidebar() -> str:
         st.markdown("---")
         st.markdown("#### 🗂️ 数据源")
 
-        # 市场数据模块主要靠 yfinance，数据源可折叠提示
-        if module.startswith("📡"):
-            st.caption("本模块通过 yfinance 在线拉取行情，侧边栏数据集可选。")
+        # 行情/看盘模块主要靠 yfinance
+        if module.startswith("📡") or module.startswith("🧭"):
+            st.caption("本模块通过在线行情工作，侧边栏数据集可选（不强制）。")
 
         data_source = st.radio(
             "数据来源",
@@ -140,6 +145,7 @@ def render_sidebar() -> str:
                 "💼 4. 马克维茨资产组合优化": "多资产日收益率（组合优化）",
                 "📡 5. 市场数据与技术指标": "模拟股票 OHLCV K 线",
                 "🤖 6. 机器学习分类与预测": "宏观经济与因子面板",
+                "🧭 7. 看盘助手与条件选股": "模拟股票 OHLCV K 线",
             }
             preferred = module_default_sample.get(
                 module, list(SAMPLE_DATASET_OPTIONS.keys())[0]
@@ -201,8 +207,8 @@ def render_sidebar() -> str:
 
 def render_data_banner(source_label: str, df, module: str) -> None:
     """在主区顶部展示当前数据源状态条。"""
-    # 市场数据模块不强依赖侧边栏数据
-    if module.startswith("📡"):
+    # 行情/看盘模块不强依赖侧边栏数据
+    if module.startswith("📡") or module.startswith("🧭"):
         return
 
     if df is None:
@@ -305,6 +311,9 @@ def main() -> None:
 
         elif module.startswith("🤖"):
             render_ml_classify(df)
+
+        elif module.startswith("🧭"):
+            render_watchdesk(df)
 
         else:
             st.error("未知模块，请从侧边栏重新选择。")

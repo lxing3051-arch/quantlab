@@ -12,6 +12,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from utils.data_loader import get_numeric_columns, validate_dataframe
+from utils.guides import render_beginner_guide
 from utils.report_export import register_report_section
 from utils.styles import PLOTLY_LAYOUT, render_metric_cards
 
@@ -337,6 +338,7 @@ def render_ml_classify(df: pd.DataFrame = None) -> None:
         "输出混淆矩阵、ROC 曲线与特征重要性。</div>",
         unsafe_allow_html=True,
     )
+    render_beginner_guide("ml", expanded=False)
 
     use_sample = False
     if df is None or (isinstance(df, pd.DataFrame) and df.empty):

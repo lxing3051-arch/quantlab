@@ -13,6 +13,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import streamlit as st
 
+from utils.guides import render_beginner_guide
 from utils.report_export import register_report_section
 from utils.styles import PLOTLY_LAYOUT, render_metric_cards
 
@@ -262,6 +263,7 @@ def render_market_data(df: pd.DataFrame = None) -> None:
         "并绘制 K 线、均线、MACD 与 RSI 交互式量化图表。</div>",
         unsafe_allow_html=True,
     )
+    render_beginner_guide("market", expanded=True)
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
     st.markdown('<div class="section-title">🔎 行情拉取设置</div>', unsafe_allow_html=True)

@@ -13,6 +13,7 @@ from scipy.stats import norm
 import streamlit as st
 
 from modules.risk_metrics import render_risk_tools
+from utils.guides import render_beginner_guide
 from utils.report_export import register_report_section
 from utils.styles import PLOTLY_LAYOUT, render_metric_cards
 
@@ -522,6 +523,7 @@ def render_finance(df: pd.DataFrame = None) -> None:
         '<div class="hero-sub">Black-Scholes 定价、GBM 蒙特卡洛模拟，以及 VaR / CVaR / 最大回撤风险工具。</div>',
         unsafe_allow_html=True,
     )
+    render_beginner_guide("finance", expanded=False)
 
     # 若用户加载了含 close/returns 的数据，给出历史波动率参考
     if df is not None and not df.empty:
