@@ -12,10 +12,11 @@ import plotly.graph_objects as go
 from scipy.stats import norm
 import streamlit as st
 
-from modules.risk_metrics import render_risk_tools
 from utils.guides import render_beginner_guide
 from utils.report_export import register_report_section
 from utils.styles import PLOTLY_LAYOUT, render_metric_cards
+
+from .risk_metrics import render_risk_tools
 
 
 # ---------------------------------------------------------------------------

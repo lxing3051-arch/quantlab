@@ -11,15 +11,16 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-from modules.market_data import (
+from utils.guides import render_beginner_guide
+from utils.report_export import register_report_section
+from utils.styles import render_metric_cards
+
+from .market_data import (
     build_quant_chart,
     compute_technical_indicators,
     fetch_market_data,
 )
-from modules.risk_metrics import compute_max_drawdown, compute_var_cvar
-from utils.guides import render_beginner_guide
-from utils.report_export import register_report_section
-from utils.styles import render_metric_cards
+from .risk_metrics import compute_max_drawdown, compute_var_cvar
 
 
 # 内置可筛选股票池（免费教学用，覆盖美股/A股/港股常见标的）

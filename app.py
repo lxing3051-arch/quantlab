@@ -1,14 +1,6 @@
 """
 本地数据分析与金融量化计算工具箱
 ================================
-基于 Python + Streamlit 的一站式本地分析平台，涵盖：
-1. 数据清洗与描述性统计
-2. 统计建模与 OLS 回归分析
-3. 金融量化、期权定价与风险度量
-4. 马克维茨资产组合优化
-5. 市场数据接驳与技术指标
-6. 机器学习分类与预测
-
 运行方式:
     pip install -r requirements.txt
     streamlit run app.py
@@ -18,15 +10,21 @@ from __future__ import annotations
 
 import streamlit as st
 
-from modules import (
-    render_data_stats,
-    render_finance,
-    render_market_data,
-    render_ml_classify,
-    render_portfolio,
-    render_regression,
-    render_watchdesk,
+# 必须在任何其它 Streamlit 调用 / 含 @st.cache_* 的模块导入之前设置
+st.set_page_config(
+    page_title="QuantLab · 数据分析与金融量化工具箱",
+    page_icon="📐",
+    layout="wide",
+    initial_sidebar_state="expanded",
 )
+
+from modules.data_stats import render_data_stats
+from modules.finance import render_finance
+from modules.market_data import render_market_data
+from modules.ml_classify import render_ml_classify
+from modules.portfolio import render_portfolio
+from modules.regression import render_regression
+from modules.watchdesk import render_watchdesk
 from utils.data_loader import (
     SAMPLE_DATASET_OPTIONS,
     get_sample_dataset,
@@ -35,17 +33,6 @@ from utils.data_loader import (
 from utils.guides import render_learning_path_sidebar
 from utils.report_export import render_report_download_panel
 from utils.styles import inject_custom_css
-
-
-# ---------------------------------------------------------------------------
-# 页面全局配置（必须位于所有 Streamlit 调用之前）
-# ---------------------------------------------------------------------------
-st.set_page_config(
-    page_title="QuantLab · 数据分析与金融量化工具箱",
-    page_icon="📐",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
 
 
 MODULE_OPTIONS = [
@@ -74,10 +61,7 @@ def _init_session_state() -> None:
 
 
 def _load_active_dataframe():
-    """
-    根据侧边栏选择加载当前活动数据集。
-    返回 (DataFrame | None, 数据来源说明)。
-    """
+    """根据侧边栏选择加载当前活动数据集。"""
     source = st.session_state.get("data_source", "使用内置示例")
 
     if source == "使用内置示例":
@@ -126,7 +110,6 @@ def render_sidebar() -> str:
         st.markdown("---")
         st.markdown("#### 🗂️ 数据源")
 
-        # 行情/看盘模块主要靠 yfinance
         if module.startswith("📡") or module.startswith("🧭"):
             st.caption("本模块通过在线行情工作，侧边栏数据集可选（不强制）。")
 
@@ -207,13 +190,11 @@ def render_sidebar() -> str:
 
 def render_data_banner(source_label: str, df, module: str) -> None:
     """在主区顶部展示当前数据源状态条。"""
-    # 行情/看盘模块不强依赖侧边栏数据
     if module.startswith("📡") or module.startswith("🧭"):
         return
 
     if df is None:
         if module.startswith("🤖"):
-            # ML 模块可使用内置示例，不强制阻断
             st.markdown(
                 """
                 <div style="
